@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: cadastro-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/banco-javer
+    username: root
+    password: admin123
+  jpa:
+    hibernate:
+      ddl-auto: none
