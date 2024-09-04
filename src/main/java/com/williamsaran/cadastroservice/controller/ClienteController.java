@@ -1,4 +1,4 @@
-package com.williamsaran.cadastroservice.model.controller;
+package com.williamsaran.cadastroservice.controller;
 
 import com.williamsaran.cadastroservice.model.dto.ClienteDTO;
 import com.williamsaran.cadastroservice.service.ClienteService;
