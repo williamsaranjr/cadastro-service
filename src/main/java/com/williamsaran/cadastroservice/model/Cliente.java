@@ -27,4 +27,11 @@ public class Cliente {
 
     @Column
     private Float saldo;
+
+    public void desativar() {
+        if (!correntista) {
+            throw new RuntimeException("Esta conta já está desativada.");
+        }
+        correntista = false;
+    }
 }

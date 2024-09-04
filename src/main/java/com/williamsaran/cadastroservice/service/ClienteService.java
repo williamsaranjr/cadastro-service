@@ -48,4 +48,16 @@ public class ClienteService {
 
         repository.delete(cliente);
     }
+
+    public ClienteDTO desativarConta(Long id) {
+        var cliente = repository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+
+        cliente.desativar();
+
+        return mapper.converter(
+                repository.save(cliente)
+        );
+    }
 }

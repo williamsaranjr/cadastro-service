@@ -32,4 +32,10 @@ public class ClienteController {
     public void deletarPorId(@PathVariable Long id) {
         service.deletarPorId(id);
     }
+
+    @PatchMapping("desativar/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ClienteDTO desativarConta(@PathVariable Long id) {
+        return service.desativarConta(id);
+    }
 }
