@@ -1,5 +1,6 @@
 package com.williamsaran.cadastroservice.model;
 
+import com.williamsaran.cadastroservice.exception.ContaDesativadaException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +31,7 @@ public class Cliente {
 
     public void desativar() {
         if (!correntista) {
-            throw new RuntimeException("Esta conta já está desativada.");
+            throw new ContaDesativadaException();
         }
         correntista = false;
     }
