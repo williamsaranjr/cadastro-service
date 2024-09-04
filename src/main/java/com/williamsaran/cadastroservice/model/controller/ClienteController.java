@@ -1,7 +1,6 @@
 package com.williamsaran.cadastroservice.model.controller;
 
 import com.williamsaran.cadastroservice.model.dto.ClienteDTO;
-import com.williamsaran.cadastroservice.repository.ClienteRepository;
 import com.williamsaran.cadastroservice.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +18,13 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ClienteDTO criarConta(ClienteDTO dto) {
+    public ClienteDTO criarConta(@RequestBody ClienteDTO dto) {
         return service.criarConta(dto);
+    }
+
+    @PatchMapping
+    public ClienteDTO atualizarConta(@RequestBody ClienteDTO dto) {
+        return service.atualizarConta(dto);
     }
 
     @DeleteMapping("{id}")
