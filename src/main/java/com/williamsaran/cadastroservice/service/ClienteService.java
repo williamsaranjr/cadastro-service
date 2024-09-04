@@ -20,14 +20,14 @@ public class ClienteService {
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
 
-        return mapper.clienteToClienteDto(cliente);
+        return mapper.converter(cliente);
     }
 
     public ClienteDTO criarConta(ClienteDTO dto) {
-        Cliente cliente = mapper.clienteDtoToCliente(dto);
+        Cliente cliente = mapper.converter(dto);
         cliente.setId(null);
 
-        return mapper.clienteToClienteDto(
+        return mapper.converter(
                 repository.save(cliente)
         );
     }
@@ -36,7 +36,7 @@ public class ClienteService {
         Cliente cliente = repository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
 
-        return mapper.clienteToClienteDto(
+        return mapper.converter(
                 repository.save(cliente)
         );
     }

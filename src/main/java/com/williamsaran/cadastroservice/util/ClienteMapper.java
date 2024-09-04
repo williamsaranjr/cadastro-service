@@ -11,8 +11,8 @@ import org.mapstruct.MappingConstants;
         injectionStrategy = InjectionStrategy.FIELD)
 public interface ClienteMapper {
     @Mapping(target = "id")
-    ClienteDTO clienteToClienteDto(Cliente cliente);
+    ClienteDTO converter(Cliente cliente);
 
     @Mapping(target = "id")
-    Cliente clienteDtoToCliente(ClienteDTO clienteDto);
+    Cliente converter(ClienteDTO clienteDto);
 }
