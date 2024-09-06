@@ -5,6 +5,7 @@ import com.williamsaran.cadastroservice.model.dto.ClienteDTO;
 import com.williamsaran.cadastroservice.service.ClienteService;
 import com.williamsaran.cadastroservice.util.ClienteMock;
 import lombok.NoArgsConstructor;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @NoArgsConstructor
 @AutoConfigureMockMvc
@@ -29,9 +28,6 @@ public class ClienteControllerTest {
 
     @MockBean
     private ClienteService service;
-
-    @Autowired
-    private Gson gson;
 
     private ClienteDTO dto;
 
@@ -68,6 +64,14 @@ public class ClienteControllerTest {
                 .andExpect(jsonPath("$.correntista").value(false))
                 .andExpect(jsonPath("$.scoreCredito").value(ClienteMock.SCORE_CREDITO))
                 .andExpect(jsonPath("$.saldo").value(ClienteMock.SALDO));
+    }
+
+    @Test
+    public void testDeletarConta() throws Exception {
+        doNothing().when(service).deletarPorId(1L);
+
+        mock.perform(delete("/clientes/1"))
+                .andExpect(status().isNoContent());
     }
 
 //    @Test

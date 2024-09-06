@@ -18,6 +18,7 @@ public class ClienteController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ClienteDTO criarConta(@RequestBody ClienteDTO dto) {
         return service.criarConta(dto);
     }
