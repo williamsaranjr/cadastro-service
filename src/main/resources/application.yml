@@ -11,3 +11,4 @@ spring:
 server:
   error:
     include-stacktrace: never
+  port: 8000
