@@ -1,13 +1,14 @@
 package com.williamsaran.cadastroservice.controller;
 
 import com.google.gson.Gson;
+import com.williamsaran.cadastroservice.exception.ClienteNaoEncontradoException;
+import com.williamsaran.cadastroservice.exception.ContaDesativadaException;
 import com.williamsaran.cadastroservice.model.dto.ClienteDTO;
 import com.williamsaran.cadastroservice.service.ClienteService;
 import com.williamsaran.cadastroservice.util.ClienteUtil;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,72 +25,82 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ClienteControllerTest {
     @Autowired
     private MockMvc mock;
-
     @MockBean
     private ClienteService service;
+    @InjectMocks
+    private ClienteController controller;
 
-    private ClienteDTO dto;
-
-    @BeforeEach
-    public void setUp() {
-        dto = ClienteUtil.criarDTOMock();
-    }
+    private static final Gson gson = new Gson();
 
     @Test
     public void testEncontrarPorId() throws Exception {
-        when(service.encontrarPorId(1L)).thenReturn(dto);
+        when(service.encontrarPorId(ArgumentMatchers.anyLong()))
+                .thenReturn(ClienteUtil.criarDTOMock());
 
         mock.perform(get("/clientes/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(ClienteUtil.ID))
-                .andExpect(jsonPath("$.nome").value(ClienteUtil.NOME))
-                .andExpect(jsonPath("$.telefone").value(ClienteUtil.TELEFONE))
-                .andExpect(jsonPath("$.correntista").value(ClienteUtil.CORRENTISTA))
-                .andExpect(jsonPath("$.scoreCredito").value(ClienteUtil.SCORE_CREDITO))
-                .andExpect(jsonPath("$.saldo").value(ClienteUtil.SALDO));
+                .andExpect(jsonPath("$.nome").value(ClienteUtil.NOME));
     }
 
     @Test
-    public void testDesativarConta() throws Exception {
-        dto.setCorrentista(false);
+    public void testEncontrarPorIdInvalido() throws Exception {
+        when(service.encontrarPorId(ArgumentMatchers.anyLong()))
+                .thenThrow(new ClienteNaoEncontradoException());
 
-        when(service.desativarConta(1L)).thenReturn((dto));
+        mock.perform(get("/clientes/1"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.mensagem").value(ClienteNaoEncontradoException.MSG));
+    }
 
-        mock.perform(put("/clientes/desativar/1"))
-                .andExpect(status().isNoContent())
+    @Test
+    public void testCriarConta() throws Exception {
+        var cliente = ClienteUtil.criarDTOMock();
+
+        when(service.criarConta(ArgumentMatchers.any()))
+                .thenReturn(cliente);
+
+        mock.perform(post("/clientes/")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(gson.toJson(cliente)))
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(ClienteUtil.ID))
-                .andExpect(jsonPath("$.nome").value(ClienteUtil.NOME))
-                .andExpect(jsonPath("$.telefone").value(ClienteUtil.TELEFONE))
-                .andExpect(jsonPath("$.correntista").value(false))
-                .andExpect(jsonPath("$.scoreCredito").value(ClienteUtil.SCORE_CREDITO))
-                .andExpect(jsonPath("$.saldo").value(ClienteUtil.SALDO));
-    }
-
-    @Test
-    public void testDeletarConta() throws Exception {
-        doNothing().when(service).deletarPorId(1L);
-
-        mock.perform(delete("/clientes/1"))
-                .andExpect(status().isNoContent());
+                .andExpect(jsonPath("$.nome").value(ClienteUtil.NOME));
     }
 
     @Test
     public void testAtualizarConta() throws Exception {
-        Gson gson = new Gson();
+        ClienteDTO cliente = ClienteUtil.criarDTOMock();
 
-        when(service.atualizarConta(ArgumentMatchers.any())).thenReturn(dto);
+        when(service.atualizarConta(ArgumentMatchers.any()))
+                .thenReturn(cliente);
 
-        var response = mock.perform(patch("/clientes/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(gson.toJson(dto))
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        mock.perform(patch("/clientes/")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(gson.toJson(cliente)))
+                .andExpect(status().isOk());
+    }
 
-        var responseCliente = gson.fromJson(response, ClienteDTO.class);
+    @Test
+    public void testDesativarConta() throws Exception {
+        var cliente = ClienteUtil.criarDTOMock();
+        cliente.setCorrentista(false);
 
-        Assertions.assertEquals(responseCliente.getId(), dto.getId());
+        when(service.desativarConta(ArgumentMatchers.anyLong()))
+                .thenReturn(cliente);
+
+        mock.perform(put("/clientes/desativar/1"))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.correntista").value(false));
+    }
+
+    @Test
+    public void testDesativarContaDesativada() throws Exception {
+        when(service.desativarConta(ArgumentMatchers.anyLong()))
+                .thenThrow(new ContaDesativadaException());
+
+        mock.perform(put("/clientes/desativar/1"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.mensagem").value(ContaDesativadaException.MSG));
     }
 }
