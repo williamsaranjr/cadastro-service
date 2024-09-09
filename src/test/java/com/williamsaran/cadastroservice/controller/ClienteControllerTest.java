@@ -3,8 +3,7 @@ package com.williamsaran.cadastroservice.controller;
 import com.google.gson.Gson;
 import com.williamsaran.cadastroservice.model.dto.ClienteDTO;
 import com.williamsaran.cadastroservice.service.ClienteService;
-import com.williamsaran.cadastroservice.util.ClienteMock;
-import lombok.NoArgsConstructor;
+import com.williamsaran.cadastroservice.util.ClienteUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@NoArgsConstructor
 @AutoConfigureMockMvc
 @SpringBootTest
 public class ClienteControllerTest {
@@ -34,7 +32,7 @@ public class ClienteControllerTest {
 
     @BeforeEach
     public void setUp() {
-        dto = ClienteMock.criarClienteDTOMock();
+        dto = ClienteUtil.criarDTOMock();
     }
 
     @Test
@@ -43,12 +41,12 @@ public class ClienteControllerTest {
 
         mock.perform(get("/clientes/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(ClienteMock.ID))
-                .andExpect(jsonPath("$.nome").value(ClienteMock.NOME))
-                .andExpect(jsonPath("$.telefone").value(ClienteMock.TELEFONE))
-                .andExpect(jsonPath("$.correntista").value(ClienteMock.CORRENTISTA))
-                .andExpect(jsonPath("$.scoreCredito").value(ClienteMock.SCORE_CREDITO))
-                .andExpect(jsonPath("$.saldo").value(ClienteMock.SALDO));
+                .andExpect(jsonPath("$.id").value(ClienteUtil.ID))
+                .andExpect(jsonPath("$.nome").value(ClienteUtil.NOME))
+                .andExpect(jsonPath("$.telefone").value(ClienteUtil.TELEFONE))
+                .andExpect(jsonPath("$.correntista").value(ClienteUtil.CORRENTISTA))
+                .andExpect(jsonPath("$.scoreCredito").value(ClienteUtil.SCORE_CREDITO))
+                .andExpect(jsonPath("$.saldo").value(ClienteUtil.SALDO));
     }
 
     @Test
@@ -59,12 +57,12 @@ public class ClienteControllerTest {
 
         mock.perform(put("/clientes/desativar/1"))
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("$.id").value(ClienteMock.ID))
-                .andExpect(jsonPath("$.nome").value(ClienteMock.NOME))
-                .andExpect(jsonPath("$.telefone").value(ClienteMock.TELEFONE))
+                .andExpect(jsonPath("$.id").value(ClienteUtil.ID))
+                .andExpect(jsonPath("$.nome").value(ClienteUtil.NOME))
+                .andExpect(jsonPath("$.telefone").value(ClienteUtil.TELEFONE))
                 .andExpect(jsonPath("$.correntista").value(false))
-                .andExpect(jsonPath("$.scoreCredito").value(ClienteMock.SCORE_CREDITO))
-                .andExpect(jsonPath("$.saldo").value(ClienteMock.SALDO));
+                .andExpect(jsonPath("$.scoreCredito").value(ClienteUtil.SCORE_CREDITO))
+                .andExpect(jsonPath("$.saldo").value(ClienteUtil.SALDO));
     }
 
     @Test
