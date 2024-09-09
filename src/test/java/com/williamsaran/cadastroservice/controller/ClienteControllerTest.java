@@ -3,7 +3,6 @@ package com.williamsaran.cadastroservice.controller;
 import com.google.gson.Gson;
 import com.williamsaran.cadastroservice.model.dto.ClienteDTO;
 import com.williamsaran.cadastroservice.service.ClienteService;
-import com.williamsaran.cadastroservice.util.ClienteMapper;
 import com.williamsaran.cadastroservice.util.ClienteMock;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Assertions;
