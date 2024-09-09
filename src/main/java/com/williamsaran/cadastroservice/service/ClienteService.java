@@ -22,9 +22,7 @@ public class ClienteService {
 
     public ClienteDTO encontrarPorId(Long id) {
         LOGGER.info("Buscando cliente por ID: " + id);
-        var cliente = repository
-                .findById(id)
-                .orElseThrow(() -> new ClienteNaoEncontradoException(LOGGER));
+        var cliente = buscarClientePorId(id);
 
         return mapper.converter(cliente);
     }
@@ -38,11 +36,14 @@ public class ClienteService {
         );
     }
 
+    // TODO: Finalizar a implementação da atualização parcial de conta
+
     public ClienteDTO atualizarConta(ClienteDTO dto) {
         LOGGER.info("Atualizando cliente: " + dto.getId());
 
-        Cliente cliente = repository.findById(dto.getId())
-                .orElseThrow(() -> new ClienteNaoEncontradoException(LOGGER));
+        Cliente cliente = buscarClientePorId(dto.getId());
+
+        cliente.atualizarParcialmente(dto);
 
         return mapper.converter(
                 repository.save(cliente)
@@ -52,9 +53,7 @@ public class ClienteService {
     public void deletarPorId(Long id) {
         LOGGER.info("Deletando cliente: " + id);
 
-        Cliente cliente = repository
-                .findById(id)
-                .orElseThrow(() -> new ClienteNaoEncontradoException(LOGGER));
+        Cliente cliente = buscarClientePorId(id);
 
         repository.delete(cliente);
     }
@@ -62,14 +61,26 @@ public class ClienteService {
     public ClienteDTO desativarConta(Long id) {
         LOGGER.info("Desativando cliente: " + id);
 
-        var cliente = repository
-                .findById(id)
-                .orElseThrow(() -> new ClienteNaoEncontradoException(LOGGER));
+        var cliente = buscarClientePorId(id);
 
         cliente.desativar();
 
         return mapper.converter(
                 repository.save(cliente)
         );
+    }
+
+    /**
+     * Função auxiliar para buscar um cliente por ID
+     *
+     * @param id ID a ser consultado
+     * @return Cliente correspondente ao ID
+     *
+     * @throws ClienteNaoEncontradoException Caso o cliente não seja encontrado
+     */
+    private Cliente buscarClientePorId(Long id) {
+        return repository
+                .findById(id)
+                .orElseThrow(() -> new ClienteNaoEncontradoException(LOGGER));
     }
 }

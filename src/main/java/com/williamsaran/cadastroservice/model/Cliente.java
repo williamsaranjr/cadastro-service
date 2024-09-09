@@ -1,6 +1,7 @@
 package com.williamsaran.cadastroservice.model;
 
 import com.williamsaran.cadastroservice.exception.ContaDesativadaException;
+import com.williamsaran.cadastroservice.model.dto.ClienteDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,21 @@ public class Cliente {
 
     @Column
     private Float saldo;
+
+    public void atualizarParcialmente(ClienteDTO dto) {
+        if (dto.getNome() != null) {
+            nome = dto.getNome();
+        }
+        if (dto.getTelefone() != null) {
+            telefone = dto.getTelefone();
+        }
+        if (dto.getScoreCredito() != null) {
+            scoreCredito = dto.getScoreCredito();
+        }
+        if (dto.getSaldo() != null) {
+            saldo = dto.getSaldo();
+        }
+    }
 
     public void desativar() {
         if (!correntista) {

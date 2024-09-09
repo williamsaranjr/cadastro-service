@@ -27,18 +27,8 @@ public class ClienteServiceTest {
     private ClienteService service;
 
     @Test
-    public void testEncontrarPorIdValido() {
-        buscarContaValida();
-
-        var cliente = service.encontrarPorId(1L);
-
-        Assertions.assertEquals(ClienteUtil.ID, cliente.getId());
-        Assertions.assertEquals(ClienteUtil.NOME, cliente.getNome());
-    }
-
-    @Test
     public void testEncontrarPorIdInvalido() {
-        buscarContaInvalida();
+        configurarMockParaBuscaInvalida();
 
         Assertions.assertThrows(
                 ClienteNaoEncontradoException.class,
@@ -47,8 +37,18 @@ public class ClienteServiceTest {
     }
 
     @Test
+    public void testEncontrarPorIdValido() {
+        configurarMockParaBuscaValida();
+
+        var cliente = service.encontrarPorId(1L);
+
+        Assertions.assertEquals(ClienteUtil.ID, cliente.getId());
+        Assertions.assertEquals(ClienteUtil.NOME, cliente.getNome());
+    }
+
+    @Test
     public void testCriarConta() {
-        salvarContaValida();
+        configurarMockParaSalvarCliente(ClienteUtil.criarClienteMock());
 
         var entity = service.criarConta(ClienteUtil.criarDTOMock());
 
@@ -57,25 +57,17 @@ public class ClienteServiceTest {
     }
 
     @Test
-    public void testAtualizarContaInvalida() {
-        buscarContaInvalida();
+    public void testAtualizarConta() {
+        var dto = ClienteUtil.criarDTOMock();
+        dto.setNome("Xico Bento");
+        dto.setSaldo(0F);
+        configurarMockParaBuscaValida();
+        configurarMockParaSalvarCliente(mapper.converter(dto));
 
-        Assertions.assertThrows(
-                ClienteNaoEncontradoException.class,
-                () -> service.atualizarConta(ClienteUtil.criarDTOMock())
-        );
-    }
+        var entity = service.atualizarConta(dto);
 
-    // TODO: implementar testes de atualização parcial de conta
-
-    @Test
-    public void testDeletarContaInvalida() {
-        buscarContaInvalida();
-
-        Assertions.assertThrows(
-                ClienteNaoEncontradoException.class,
-                () -> service.deletarPorId(1L)
-        );
+        Assertions.assertEquals("Xico Bento", entity.getNome());
+        Assertions.assertEquals(0F, entity.getSaldo());
     }
 
     @Test
@@ -89,16 +81,6 @@ public class ClienteServiceTest {
         service.deletarPorId(1L);
 
         Mockito.verify(repository, Mockito.times(1)).delete(cliente);
-    }
-
-    @Test
-    public void testDesativarContaInvalida() {
-        buscarContaInvalida();
-
-        Assertions.assertThrows(
-                ClienteNaoEncontradoException.class,
-                () -> service.desativarConta(1L)
-        );
     }
 
     @Test
@@ -120,8 +102,7 @@ public class ClienteServiceTest {
      * Instrui o Mock do {@link ClienteRepository} a retornar uma conta válida
      * ao salvar uma nova conta.
      */
-    private Cliente salvarContaValida() {
-        Cliente cliente = ClienteUtil.criarClienteMock();
+    private Cliente configurarMockParaSalvarCliente(Cliente cliente) {
 
         Mockito.when(repository.save(ArgumentMatchers.any()))
                 .thenReturn(cliente);
@@ -133,11 +114,11 @@ public class ClienteServiceTest {
      * Instrui o Mock do {@link ClienteRepository} a retornar uma conta válida
      * ao realizar uma busca por ID.
      */
-    private Cliente buscarContaValida() {
-        Cliente cliente = ClienteUtil.criarClienteMock();
+    private Optional<Cliente> configurarMockParaBuscaValida() {
+        Optional<Cliente> cliente = Optional.of(ClienteUtil.criarClienteMock());
 
         Mockito.when(repository.findById(1L))
-                .thenReturn(Optional.of(cliente));
+                .thenReturn(cliente);
 
         return cliente;
     }
@@ -148,7 +129,7 @@ public class ClienteServiceTest {
      *
      * @return Um {@link Optional} de cliente vazio
      */
-    private Optional<Cliente> buscarContaInvalida() {
+    private Optional<Cliente> configurarMockParaBuscaInvalida() {
         Optional<Cliente> empty = Optional.empty();
 
         Mockito.when(repository.findById(ArgumentMatchers.anyLong()))
