@@ -103,4 +103,14 @@ public class ClienteControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.mensagem").value(ContaDesativadaException.MSG));
     }
+
+    @Test
+    public void testDeletarPorId() throws Exception {
+        doNothing()
+                .when(service)
+                .deletarPorId(ArgumentMatchers.anyLong());
+
+        mock.perform(delete("/clientes/1"))
+                .andExpect(status().isNoContent());
+    }
 }
