@@ -39,7 +39,6 @@ public class ClienteController {
 
     @PutMapping(value = "desativar/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ClienteDTO desativarConta(@PathVariable Long id) {
         return service.desativarConta(id);
     }

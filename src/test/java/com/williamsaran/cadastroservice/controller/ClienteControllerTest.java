@@ -90,7 +90,7 @@ public class ClienteControllerTest {
                 .thenReturn(cliente);
 
         mock.perform(put("/clientes/desativar/1"))
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.correntista").value(false));
     }
 
