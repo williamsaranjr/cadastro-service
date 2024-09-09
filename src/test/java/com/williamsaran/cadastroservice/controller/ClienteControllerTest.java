@@ -58,7 +58,7 @@ public class ClienteControllerTest {
 
         when(service.desativarConta(1L)).thenReturn((dto));
 
-        mock.perform(patch("/clientes/desativar/1"))
+        mock.perform(put("/clientes/desativar/1"))
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.id").value(ClienteMock.ID))
                 .andExpect(jsonPath("$.nome").value(ClienteMock.NOME))
