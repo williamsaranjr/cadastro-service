@@ -16,3 +16,12 @@ ser feitas no arquivo `src/main/resources/application.yml`.
 Com o serviço em execução, os endpoints
 podem ser visualizados através do Swagger UI, acessando a
 [documentação](http://localhost:8000/swagger-ui.html).
+
+## Executar
+Para executar o serviço, basta rodar o comando equivalente:
+- Releases: 
+  - `java -jar cadastro-service-0.0.1-SNAPSHOT.jar`
+- Maven
+  - `mvn clean compile`
+  - `mvn clean package`
+  - `java -jar target/cadastro-service-0.0.1-SNAPSHOT.jar`
