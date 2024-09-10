@@ -89,7 +89,7 @@ public class ClienteControllerTest {
         when(service.desativarConta(ArgumentMatchers.anyLong()))
                 .thenReturn(cliente);
 
-        mock.perform(put("/clientes/desativar/1"))
+        mock.perform(patch("/clientes/desativar/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.correntista").value(false));
     }
@@ -99,7 +99,7 @@ public class ClienteControllerTest {
         when(service.desativarConta(ArgumentMatchers.anyLong()))
                 .thenThrow(new ContaDesativadaException());
 
-        mock.perform(put("/clientes/desativar/1"))
+        mock.perform(patch("/clientes/desativar/1"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.mensagem").value(ContaDesativadaException.MSG));
     }
