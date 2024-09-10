@@ -60,7 +60,7 @@ public class ClienteControllerTest {
         when(service.criarConta(ArgumentMatchers.any()))
                 .thenReturn(cliente);
 
-        mock.perform(post("/clientes/")
+        mock.perform(post("/clientes")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(gson.toJson(cliente)))
                 .andExpect(status().isCreated())
@@ -75,7 +75,7 @@ public class ClienteControllerTest {
         when(service.atualizarConta(ArgumentMatchers.any()))
                 .thenReturn(cliente);
 
-        mock.perform(patch("/clientes/")
+        mock.perform(patch("/clientes")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(gson.toJson(cliente)))
                 .andExpect(status().isOk());
