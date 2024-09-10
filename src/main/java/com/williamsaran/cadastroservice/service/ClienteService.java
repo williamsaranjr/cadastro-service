@@ -36,8 +36,6 @@ public class ClienteService {
         );
     }
 
-    // TODO: Finalizar a implementação da atualização parcial de conta
-
     public ClienteDTO atualizarConta(ClienteDTO dto) {
         LOGGER.info("Atualizando cliente: " + dto.getId());
 
